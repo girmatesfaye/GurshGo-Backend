@@ -35,6 +35,7 @@ export type AuthUserRecord = {
   role: UserRole;
   createdAt: string;
   updatedAt: string;
+  is_suspended?: boolean;
 };
 
 export type OtpChallenge = {

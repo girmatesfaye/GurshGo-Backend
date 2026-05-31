@@ -2,6 +2,8 @@ import express from "express";
 
 import { isAppError } from "./lib/errors";
 import { sendError } from "./lib/responses";
+import { adminRouter } from "./modules/admin";
+import { analyticsRouter } from "./modules/analytics";
 import { authRouter } from "./modules/auth";
 import { driversRouter } from "./modules/drivers";
 import { menuRouter } from "./modules/menu";
@@ -32,6 +34,8 @@ export function createApp() {
   app.use(reviewsRouter);
   app.use("/promotions", promotionsRouter);
   app.use("/notifications", notificationsRouter);
+  app.use("/analytics", analyticsRouter);
+  app.use("/admin", adminRouter);
 
   app.use((_request, response) => {
     sendError(response, 404, "NOT_FOUND", "Route not found");

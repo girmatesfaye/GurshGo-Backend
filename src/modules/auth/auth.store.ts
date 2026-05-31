@@ -63,6 +63,30 @@ export function updateUser(
   return updated;
 }
 
+export function listUsers(q?: string) {
+  const all = Array.from(usersById.values());
+  if (!q) return all;
+  const lower = q.toLowerCase();
+  return all.filter(
+    (u) =>
+      (u.phone && u.phone.toLowerCase().includes(lower)) ||
+      (u.email && u.email.toLowerCase().includes(lower)) ||
+      (u.name && u.name.toLowerCase().includes(lower)),
+  );
+}
+
+export function suspendUser(userId: string, suspended: boolean) {
+  const user = usersById.get(userId);
+  if (!user) return null;
+  const updated = {
+    ...user,
+    is_suspended: suspended,
+    updatedAt: new Date().toISOString(),
+  };
+  usersById.set(userId, updated);
+  return updated;
+}
+
 export function createSession(
   userId: string,
   tokenId: string,
