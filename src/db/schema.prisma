@@ -1,0 +1,143 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CUSTOMER
+  OWNER
+  DRIVER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  ACCEPTED
+  PREPARING
+  PICKED_UP
+  DELIVERING
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+model User {
+  id         String      @id @default(uuid())
+  email      String      @unique
+  name       String?
+  password   String
+  role       Role        @default(CUSTOMER)
+  phone      String?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  restaurants Restaurant[]  @relation("OwnerRestaurants")
+  orders      Order[] 
+  reviews     Review[]
+  payments    Payment[]
+  drivers     Driver?    @relation(fields: [driverId], references: [id])
+  driverId    String?
+}
+
+model Driver {
+  id         String    @id @default(uuid())
+  user       User      @relation(fields: [userId], references: [id])
+  userId     String    @unique
+  vehicle    String?
+  plate      String?
+  rating     Float?    @default(0)
+  createdAt  DateTime  @default(now())
+
+  orders     Order[] 
+}
+
+model Restaurant {
+  id         String      @id @default(uuid())
+  name       String
+  description String?
+  address    String?
+  lat        Float?
+  lng        Float?
+  owner      User        @relation("OwnerRestaurants", fields: [ownerId], references: [id])
+  ownerId    String
+  menuItems  MenuItem[]
+  orders     Order[]
+  reviews    Review[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+model MenuItem {
+  id            String    @id @default(uuid())
+  restaurant    Restaurant @relation(fields: [restaurantId], references: [id])
+  restaurantId  String
+  name          String
+  description   String?
+  price         Decimal   @db.Decimal(10, 2)
+  available     Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  orderItems    OrderItem[]
+}
+
+model Order {
+  id            String       @id @default(uuid())
+  customer      User         @relation(fields: [customerId], references: [id])
+  customerId    String
+  driver        Driver?      @relation(fields: [driverId], references: [id])
+  driverId      String?
+  restaurant    Restaurant   @relation(fields: [restaurantId], references: [id])
+  restaurantId  String
+  status        OrderStatus  @default(PENDING)
+  total         Decimal      @db.Decimal(10, 2)
+  note          String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  items         OrderItem[]
+  payment       Payment?
+}
+
+model OrderItem {
+  id         String   @id @default(uuid())
+  order      Order    @relation(fields: [orderId], references: [id])
+  orderId    String
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id])
+  menuItemId String
+  name       String
+  quantity   Int      @default(1)
+  price      Decimal  @db.Decimal(10, 2)
+}
+
+model Payment {
+  id         String        @id @default(uuid())
+  order      Order         @relation(fields: [orderId], references: [id])
+  orderId    String        @unique
+  amount     Decimal       @db.Decimal(10, 2)
+  status     PaymentStatus @default(PENDING)
+  method     String?
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+}
+
+model Review {
+  id           String     @id @default(uuid())
+  user         User       @relation(fields: [userId], references: [id])
+  userId       String
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+  restaurantId String
+  rating       Int
+  comment      String?
+  createdAt    DateTime   @default(now())
+}
