@@ -22,6 +22,7 @@ export type MenuCategory = {
 
 export type RestaurantRecord = {
   id: string;
+  owner_id?: string;
   name: string;
   cuisine_type: string;
   description?: string;

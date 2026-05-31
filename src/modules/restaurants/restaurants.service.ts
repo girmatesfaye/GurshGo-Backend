@@ -127,6 +127,7 @@ export const restaurantsService = {
 
   create(input: Partial<RestaurantRecord>) {
     const rec = createRestaurant({
+      owner_id: input.owner_id,
       name: input.name ?? "",
       cuisine_type: input.cuisine_type ?? "",
       description: input.description,

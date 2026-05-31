@@ -3,7 +3,12 @@ import express from "express";
 import { isAppError } from "./lib/errors";
 import { sendError } from "./lib/responses";
 import { authRouter } from "./modules/auth";
+import { driversRouter } from "./modules/drivers";
+import { menuRouter } from "./modules/menu";
+import { ordersRouter } from "./modules/orders";
+import { paymentsRouter } from "./modules/payments";
 import { restaurantsRouter } from "./modules/restaurants";
+import { reviewsRouter } from "./modules/reviews";
 import { usersRouter } from "./modules/users";
 
 export function createApp() {
@@ -18,6 +23,11 @@ export function createApp() {
   app.use("/auth", authRouter);
   app.use("/users", usersRouter);
   app.use("/restaurants", restaurantsRouter);
+  app.use("/restaurants/:restaurantId/menu", menuRouter);
+  app.use("/orders", ordersRouter);
+  app.use("/payments", paymentsRouter);
+  app.use("/drivers", driversRouter);
+  app.use(reviewsRouter);
 
   app.use((_request, response) => {
     sendError(response, 404, "NOT_FOUND", "Route not found");

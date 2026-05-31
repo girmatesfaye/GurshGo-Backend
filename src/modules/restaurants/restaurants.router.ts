@@ -6,9 +6,6 @@ import {
   type AuthenticatedRequest,
 } from "../auth/auth.middleware";
 import {
-  menuCategoryCreateSchema,
-  menuItemCreateSchema,
-  menuItemUpdateSchema,
   restaurantCreateSchema,
   restaurantUpdateSchema,
 } from "./restaurants.schema";
@@ -88,7 +85,10 @@ router.post(
     }
 
     try {
-      const created = restaurantsService.create(parsed.data as any);
+      const created = restaurantsService.create({
+        ...parsed.data,
+        owner_id: request.auth?.userId,
+      } as any);
       return sendSuccess(response, 201, created);
     } catch (error: any) {
       return sendError(
@@ -124,132 +124,6 @@ router.patch(
         parsed.data as any,
       );
       return sendSuccess(response, 200, updated);
-    } catch (error: any) {
-      return sendError(
-        response,
-        error.statusCode ?? 500,
-        error.code ?? "SERVER_ERROR",
-        error.message ?? "An unexpected error occurred",
-      );
-    }
-  },
-);
-
-router.post(
-  "/:id/menu/categories",
-  requireAuth,
-  requireRole(["merchant"]),
-  (request: AuthenticatedRequest, response) => {
-    const parsed = menuCategoryCreateSchema.safeParse(request.body);
-    if (!parsed.success) {
-      const issue = parsed.error.issues[0];
-      return sendError(
-        response,
-        400,
-        "VALIDATION_ERROR",
-        issue.message,
-        issue.path.length ? String(issue.path[0]) : null,
-      );
-    }
-
-    try {
-      const cat = restaurantsService.addCategory(
-        String(request.params.id),
-        parsed.data.name,
-        parsed.data.sort_order,
-      );
-      return sendSuccess(response, 201, cat);
-    } catch (error: any) {
-      return sendError(
-        response,
-        error.statusCode ?? 500,
-        error.code ?? "SERVER_ERROR",
-        error.message ?? "An unexpected error occurred",
-      );
-    }
-  },
-);
-
-router.post(
-  "/:id/menu/items",
-  requireAuth,
-  requireRole(["merchant"]),
-  (request: AuthenticatedRequest, response) => {
-    const parsed = menuItemCreateSchema.safeParse(request.body);
-    if (!parsed.success) {
-      const issue = parsed.error.issues[0];
-      return sendError(
-        response,
-        400,
-        "VALIDATION_ERROR",
-        issue.message,
-        issue.path.length ? String(issue.path[0]) : null,
-      );
-    }
-
-    try {
-      const item = restaurantsService.addItem(
-        String(request.params.id),
-        parsed.data as any,
-      );
-      return sendSuccess(response, 201, item);
-    } catch (error: any) {
-      return sendError(
-        response,
-        error.statusCode ?? 500,
-        error.code ?? "SERVER_ERROR",
-        error.message ?? "An unexpected error occurred",
-      );
-    }
-  },
-);
-
-router.patch(
-  "/:id/menu/items/:item_id",
-  requireAuth,
-  requireRole(["merchant"]),
-  (request: AuthenticatedRequest, response) => {
-    const parsed = menuItemUpdateSchema.safeParse(request.body);
-    if (!parsed.success) {
-      const issue = parsed.error.issues[0];
-      return sendError(
-        response,
-        400,
-        "VALIDATION_ERROR",
-        issue.message,
-        issue.path.length ? String(issue.path[0]) : null,
-      );
-    }
-
-    try {
-      const updated = restaurantsService.updateItem(
-        String(request.params.id),
-        String(request.params.item_id),
-        parsed.data as any,
-      );
-      return sendSuccess(response, 200, updated);
-    } catch (error: any) {
-      return sendError(
-        response,
-        error.statusCode ?? 500,
-        error.code ?? "SERVER_ERROR",
-        error.message ?? "An unexpected error occurred",
-      );
-    }
-  },
-);
-
-router.delete(
-  "/:id/menu/items/:item_id",
-  requireAuth,
-  requireRole(["merchant"]),
-  (request: AuthenticatedRequest, response) => {
-    try {
-      const result = restaurantsService.deleteItem(
-        String(request.params.id),
-        String(request.params.item_id),
-      );
-      return sendSuccess(response, 200, result);
     } catch (error: any) {
       return sendError(
         response,
