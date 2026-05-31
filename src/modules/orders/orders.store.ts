@@ -122,6 +122,30 @@ export function usePromotion(restaurantId: string, code: string) {
   return next;
 }
 
+export function listPromotions(restaurantId: string) {
+  return Array.from(promotions.values()).filter(
+    (p) => p.restaurant_id === restaurantId,
+  );
+}
+
+export function deactivatePromotionById(promoId: string) {
+  for (const [key, promo] of promotions.entries()) {
+    if (promo.id === promoId) {
+      const updated = { ...promo, active: false };
+      promotions.set(key, updated);
+      return updated;
+    }
+  }
+  return null;
+}
+
+export function getPromotionById(promoId: string) {
+  for (const promo of promotions.values()) {
+    if (promo.id === promoId) return promo;
+  }
+  return null;
+}
+
 export function clearOrders() {
   orders.clear();
   promotions.clear();

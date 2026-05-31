@@ -5,8 +5,10 @@ import { sendError } from "./lib/responses";
 import { authRouter } from "./modules/auth";
 import { driversRouter } from "./modules/drivers";
 import { menuRouter } from "./modules/menu";
+import { notificationsRouter } from "./modules/notifications";
 import { ordersRouter } from "./modules/orders";
 import { paymentsRouter } from "./modules/payments";
+import { promotionsRouter } from "./modules/promotions";
 import { restaurantsRouter } from "./modules/restaurants";
 import { reviewsRouter } from "./modules/reviews";
 import { usersRouter } from "./modules/users";
@@ -28,6 +30,8 @@ export function createApp() {
   app.use("/payments", paymentsRouter);
   app.use("/drivers", driversRouter);
   app.use(reviewsRouter);
+  app.use("/promotions", promotionsRouter);
+  app.use("/notifications", notificationsRouter);
 
   app.use((_request, response) => {
     sendError(response, 404, "NOT_FOUND", "Route not found");
