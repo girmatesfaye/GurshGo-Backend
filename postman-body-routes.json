@@ -1,0 +1,293 @@
+{
+  "baseUrl": "http://localhost:3000",
+  "routesRequiringBody": [
+    {
+      "method": "POST",
+      "path": "/auth/register",
+      "auth": false,
+      "body": {
+        "name": "Jane Doe",
+        "phone": "+15550000001",
+        "email": "jane@example.com",
+        "password": "password123",
+        "role": "customer"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "auth": false,
+      "body": {
+        "phone": "+15550000001",
+        "password": "password123"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/auth/otp/send",
+      "auth": false,
+      "body": {
+        "phone": "+15550000001"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/auth/otp/verify",
+      "auth": false,
+      "body": {
+        "phone": "+15550000001",
+        "otp": "123456"
+      }
+    },
+    {
+      "method": "PATCH",
+      "path": "/users/me",
+      "auth": true,
+      "body": {
+        "name": "Jane Updated",
+        "email": "jane.updated@example.com"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/users/me/addresses",
+      "auth": true,
+      "body": {
+        "label": "Home",
+        "street": "123 Main St",
+        "city": "Addis Ababa",
+        "lat": 8.9806,
+        "lng": 38.7578,
+        "is_default": true
+      }
+    },
+    {
+      "method": "PATCH",
+      "path": "/users/me/addresses/:id",
+      "auth": true,
+      "body": {
+        "label": "Work",
+        "street": "456 Bole Rd",
+        "city": "Addis Ababa",
+        "lat": 8.996,
+        "lng": 38.787,
+        "is_default": false
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/restaurants",
+      "auth": true,
+      "body": {
+        "name": "Gursha Kitchen",
+        "cuisine_type": "Ethiopian",
+        "description": "Traditional dishes",
+        "address": "Bole, Addis Ababa",
+        "lat": 8.99,
+        "lng": 38.79,
+        "phone": "+251900000001",
+        "avg_prep_minutes": 25,
+        "delivery_fee": 30,
+        "min_order": 100,
+        "is_open": true,
+        "image_url": "https://example.com/restaurant.jpg"
+      }
+    },
+    {
+      "method": "PATCH",
+      "path": "/restaurants/:id",
+      "auth": true,
+      "body": {
+        "name": "Gursha Kitchen Updated",
+        "is_open": false
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/restaurants/:restaurantId/menu/categories",
+      "auth": true,
+      "body": {
+        "name": "Main Dishes",
+        "sort_order": 1
+      }
+    },
+    {
+      "method": "PATCH",
+      "path": "/restaurants/:restaurantId/menu/categories/:category_id",
+      "auth": true,
+      "body": {
+        "name": "Specials",
+        "sort_order": 2
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/restaurants/:restaurantId/menu/items",
+      "auth": true,
+      "body": {
+        "category_id": "category_123",
+        "name": "Doro Wat",
+        "description": "Spicy chicken stew",
+        "price": 250,
+        "image_url": "https://example.com/doro-wat.jpg",
+        "is_available": true
+      }
+    },
+    {
+      "method": "PATCH",
+      "path": "/restaurants/:restaurantId/menu/items/:item_id",
+      "auth": true,
+      "body": {
+        "category_id": "category_123",
+        "name": "Kitfo",
+        "description": "Seasoned minced beef",
+        "price": 300,
+        "image_url": "https://example.com/kitfo.jpg",
+        "is_available": true
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/orders",
+      "auth": true,
+      "body": {
+        "restaurant_id": "restaurant_123",
+        "delivery_address_id": "address_123",
+        "items": [
+          {
+            "menu_item_id": "menu_item_123",
+            "quantity": 2,
+            "notes": "Less spicy"
+          }
+        ],
+        "promo_code": "SAVE10",
+        "payment_method": "card",
+        "tip_amount": 20
+      }
+    },
+    {
+      "method": "PATCH",
+      "path": "/orders/:id/status",
+      "auth": true,
+      "body": {
+        "status": "PREPARING",
+        "prep_minutes": 20
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/orders/:id/cancel",
+      "auth": true,
+      "body": {
+        "reason": "Changed my mind"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/payments/confirm",
+      "auth": true,
+      "body": {
+        "order_id": "order_123",
+        "stripe_payment_intent_id": "pi_123"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/payments/refund",
+      "auth": true,
+      "body": {
+        "order_id": "order_123",
+        "amount": 100,
+        "reason": "Customer request"
+      }
+    },
+    {
+      "method": "PATCH",
+      "path": "/drivers/me/status",
+      "auth": true,
+      "body": {
+        "status": "online"
+      }
+    },
+    {
+      "method": "PATCH",
+      "path": "/drivers/me/location",
+      "auth": true,
+      "body": {
+        "lat": 8.99,
+        "lng": 38.79,
+        "bearing": 180
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/drivers/me/job/respond",
+      "auth": true,
+      "body": {
+        "order_id": "order_123",
+        "action": "accept"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/promotions",
+      "auth": true,
+      "body": {
+        "restaurant_id": "restaurant_123",
+        "code": "SAVE10",
+        "type": "percent",
+        "value": 10,
+        "min_order_value": 200,
+        "max_uses": 100,
+        "expires_at": "2026-12-31T23:59:59.000Z"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/promotions/validate",
+      "auth": true,
+      "body": {
+        "restaurant_id": "restaurant_123",
+        "code": "SAVE10",
+        "order_subtotal": 250
+      }
+    },
+    {
+      "method": "PATCH",
+      "path": "/notifications/read",
+      "auth": true,
+      "body": {
+        "notification_ids": ["notification_1", "notification_2"],
+        "mark_all": false
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/notifications/device",
+      "auth": true,
+      "body": {
+        "token": "expo-push-token-123",
+        "platform": "web"
+      }
+    },
+    {
+      "method": "PATCH",
+      "path": "/admin/orders/:id/status",
+      "auth": true,
+      "body": {
+        "status": "DELIVERED",
+        "prep_minutes": 15
+      }
+    },
+    {
+      "method": "PATCH",
+      "path": "/admin/users/:id",
+      "auth": true,
+      "body": {
+        "name": "Updated User",
+        "email": "updated@example.com",
+        "is_suspended": false
+      }
+    }
+  ]
+}

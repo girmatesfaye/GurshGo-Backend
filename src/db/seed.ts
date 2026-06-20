@@ -154,9 +154,17 @@ async function main(prisma: any) {
 (async () => {
   let prisma: any = undefined;
   try {
-    const mod = (await import("@prisma/client")) as any;
-    const PrismaClient = mod.PrismaClient;
-    prisma = new PrismaClient();
+    const [{ PrismaClient }, { PrismaPg }] = await Promise.all([
+      import("@prisma/client"),
+      import("@prisma/adapter-pg"),
+    ]);
+    const connectionString = process.env.DATABASE_URL;
+    if (!connectionString) {
+      throw new Error("DATABASE_URL is required for seeding");
+    }
+
+    const adapter = new PrismaPg({ connectionString });
+    prisma = new PrismaClient({ adapter });
     await main(prisma);
   } catch (e) {
     console.error(e);
